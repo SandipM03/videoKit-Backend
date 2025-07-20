@@ -113,19 +113,19 @@ src/
    Create a `.env` file in the root directory:
    ```env
    PORT=8000
-   MONGODB_URI=mongodb://localhost:27017/videokit
+   MONGODB_URI=
    CORS_ORIGIN=*
    
    # JWT Secrets
-   ACCESS_TOKEN_SECRET=your_access_token_secret
-   ACCESS_TOKEN_EXPIRY=1d
-   REFRESH_TOKEN_SECRET=your_refresh_token_secret
-   REFRESH_TOKEN_EXPIRY=10d
+   ACCESS_TOKEN_SECRET=
+   ACCESS_TOKEN_EXPIRY=
+   REFRESH_TOKEN_SECRET=
+   REFRESH_TOKEN_EXPIRY=
    
    # Cloudinary Configuration
-   CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-   CLOUDINARY_API_KEY=your_cloudinary_api_key
-   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+   CLOUDINARY_CLOUD_NAME=
+   CLOUDINARY_API_KEY=
+   CLOUDINARY_API_SECRET=
    ```
 
 4. **Start the development server**
@@ -218,21 +218,6 @@ All files are automatically uploaded to Cloudinary and local temporary files are
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the ISC License.
-
-## 🔮 Future Enhancements
-
-- [ ] Video transcoding and multiple quality options
-- [ ] Real-time notifications
-- [ ] Advanced search and filtering
-- [ ] Video recommendations algorithm
-- [ ] Live streaming support
-- [ ] Mobile app integration
-- [ ] Analytics dashboard
-- [ ] Content moderation tools
 
 ## 📞 Support
 
