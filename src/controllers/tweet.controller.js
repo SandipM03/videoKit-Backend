@@ -85,7 +85,9 @@ const updateTweet = asyncHandler(async (req, res) => {
             },
             {new: true}
         );
-
+        if(!tweet){
+            throw new apiError(404, "Tweet not found")
+        }
         return res.status(200).json(
             new ApiResponse(200, tweet, "Tweet updated successfully")
         )
@@ -107,6 +109,9 @@ const deleteTweet = asyncHandler(async (req, res) => {
         const existingTweet = await Tweet.findById(tweetId);
         if(!existingTweet){
             throw new apiError(404, "Tweet not found")
+        }
+        if(existingTweet.owner.toString()!== req.user._id.toString()){
+            throw new apiError(403, "You can only delete your own tweets")
         }
         const deletedTweet = await Tweet.findByIdAndDelete(tweetId);
         if(!deletedTweet){
