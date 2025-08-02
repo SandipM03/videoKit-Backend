@@ -18,21 +18,10 @@ const generateAccessAndRefreshToken = async (userId)=>{
     }
 }
 
-
-
-
 const registerUser= asyncHandler(async(req,res)=>{
-    
-
-
  const {fullName,email,username,password} = req.body
  console.log("email:",email);
-//  console.log("password:",password);
- 
-//  if(fullName === " "){
-//     throw new apiError(400,"Full name is required")
-//  } by making multiple if conditions we can check all the conditions or 
-//we can do these
+
     if(
         [fullName,email,username,password].some((field)=>
     field?.trim()=== "")
@@ -98,12 +87,7 @@ const registerUser= asyncHandler(async(req,res)=>{
 })
 
 const loginUser = asyncHandler(async (req, res) => {
-    // req body->data
-      //username or email 
-      // find the user
-      //password check
-      //access and refresh token generation
-      //send cookies
+   
       
       const {email,username,password} = req.body;
 
@@ -240,10 +224,11 @@ const changeCurrentPassword= asyncHandler(async (req, res)=>{
 })
 
 const getCurrentUser= asyncHandler(async (req, res)=>{
-    return res.status(200).json({
-        user: req.user,
-        message: "Current user fetched successfully"
-    })
+    return res.status(200).json(
+        new apiResponse(200, req.user, "Current user fetched successfully")
+    )
+    
+
 })
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
@@ -252,7 +237,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
         throw new apiError(400, "Full name and email are required");
     }
     const user = await User.findByIdAndUpdate(req.user._id,{
-        //fullName: fullName, or we can do
+        
         $set:{
         fullName,
         email

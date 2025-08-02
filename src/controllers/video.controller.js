@@ -9,34 +9,32 @@ import {uploadCloudinary} from "../utils/cloudinary.js"
 
 const getAllVideos = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, query="", sortBy="createdA", sortType="desc", userId } = req.query
-    //TODO: get all videos based on query, sort, pagination
-
-     // Checking if the user is logged in
+    
     if(!req.user){
         throw new apiError( 401, "user need to be logged in")
     }
-      // Constructing the match object to filter videos
+      
     const match={
-        ...(query ? {title: {$regex: query, $options: "i"}} : {}),// If query exists, match titles that contain the search term (case-insensitive)
-        ...(userId?{owner: mongoose.Types.ObjectId(userId)}:{})   // If userId exists, filter videos by that owner
+        ...(query ? {title: {$regex: query, $options: "i"}} : {}),
+        ...(userId?{owner: mongoose.Types.ObjectId(userId)}:{}) 
     };
 
 
     
     const videos= await Video.aggregate([
         {
-            $match: match  // Filtering videos based on the match criteria
+            $match: match  
         },
         {
             $lookup:{
-                from: "users", // Joining with the 'users' collection to get owner information
+                from: "users", 
                 localField: "owner",
                 foreignField: "_id",
                 as: "videosByOwner"
             }
         },
         {
-            //$project: Selecting only the necessary fields to return in the response
+            
             $project:{
                 videoFile: 1,
                 thumbnail: 1,
@@ -46,7 +44,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
                 views: 1,
                 isPublished: 1,
                 owner:{
-                    $arrElemAt: ["$videosByOwner", 0] // Getting the first element of the joined array (owner details)
+                    $arrElemAt: ["$videosByOwner", 0] 
                 }
             }
         },
@@ -57,7 +55,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
             }
         },
         {
-            $skip: (page - 1) * parseInt(limit) // Skipping the records for pagination
+            $skip: (page - 1) * parseInt(limit) 
         },
 
         {
@@ -79,7 +77,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
 const publishAVideo = asyncHandler(async (req, res) => {
     const { title, description, owner } = req.body
-    // TODO: get video, upload to cloudinary, create video
+   
 
     if(!req.user){
         throw new apiError(401, "User needs to be logged in")
@@ -90,7 +88,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
     if(!description){
         throw new apiError(400, "Description is required")
     }
-     // Check if the owner exists
+    
     if(!owner || !isValidObjectId(owner)){
         throw new apiError(400, "Valid owner ID is required")
     }
@@ -140,7 +138,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 const getVideoById = asyncHandler(async (req, res) => {
     const { videoId } = req.params
-    //TODO: get video by id
+   
     if(!isValidObjectId(videoId)){
         throw new apiError(400, "Invalid video ID")
     }
@@ -162,7 +160,7 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
-    //TODO: update video details like title, description, thumbnail
+    
     const { title, description } = req.body;
     let updateData= {title, description};
     
@@ -237,7 +235,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
             throw new apiError(404, "Video not found")
         }
         video.isPublished= !video.isPublished // Toggling the publish status
-        await video.save() // Saving the updated video document
+        await video.save() 
         return res.status(200)
         .json(new apiResponse(200, video,"Video publish status toggled successfully"))
     } catch (error) {

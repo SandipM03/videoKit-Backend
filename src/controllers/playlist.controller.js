@@ -6,7 +6,7 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 
 
 const createPlaylist = asyncHandler(async (req, res) => {
-  // Extract playlist details from request body
+  
   const { name, description } = req.body;
 
  
@@ -34,10 +34,10 @@ const createPlaylist = asyncHandler(async (req, res) => {
 });
 
 const getUserPlaylists = asyncHandler(async (req, res) => {
-  // Extract userId from the request parameters
+  
   const { userId } = req.params;
 
-  // Validate if the provided userId is a valid MongoDB ObjectId
+  
   if (!isValidObjectId(userId)) {
     throw new apiError(400, "Invalid user ID");
   }
@@ -45,7 +45,7 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
  
   const playlists = await Playlist.find({ owner: userId });
 
-  // If no playlists exist for the user, return a 404 error.
+  
   if (!playlists || playlists.length === 0) {
     throw new apiError(404, "Playlist not found");
   }
@@ -61,10 +61,10 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
 });
 
 const getPlaylistById = asyncHandler(async (req, res) => {
-  // Extract playlistId from request parameters
+  
   const { playlistId } = req.params;
 
-  // Validate if playlistId is a valid MongoDB ObjectId
+  
   if (!isValidObjectId(playlistId)) {
     throw new apiError(400, "Invalid playlist ID");
   }
@@ -72,7 +72,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 
   const playlist = await Playlist.findById(playlistId).populate("videos");
 
-  // If no playlist is found, return a 404 error.
+  
   if (!playlist) {
     throw new apiError(404, "Playlist not found");
   }
@@ -85,13 +85,10 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 });
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
-  /*
-    Extract playlistId and videoId from request parameters.
-    - These IDs represent the playlist and video we want to update.
-  */
+  
   const { playlistId, videoId } = req.params;
 
-  // Validate if playlistId and videoId are valid MongoDB ObjectIds.
+  
   if (!isValidObjectId(playlistId) || !isValidObjectId(videoId)) {
     throw new apiError(400, "Invalid playlist or video ID");
   }
@@ -100,24 +97,24 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
   const updatedPlaylist = await Playlist.aggregate([
     {
       $match: {
-        _id: new mongoose.Types.ObjectId(playlistId), // Find the playlist by ID
+        _id: new mongoose.Types.ObjectId(playlistId), 
       },
     },
     {
       $addFields: {
         videos: {
-          $setUnion: ["$videos", [new mongoose.Types.ObjectId(videoId)]], // Ensure unique videos
+          $setUnion: ["$videos", [new mongoose.Types.ObjectId(videoId)]], 
         },
       },
     },
     {
       $merge: {
-        into: "playlists", // Update the existing playlist collection
+        into: "playlists", 
       },
     },
   ]);
 
-  // If no update was made, return an error.
+  
   if (!updatedPlaylist) {
     throw new apiError(404, "Playlist not found or video already added");
   }
@@ -137,10 +134,10 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
 });
 
 const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
-  // Extract playlistId and videoId from request parameters
+  
   const { playlistId, videoId } = req.params;
 
-  // Validate both IDs to make sure they're legit MongoDB ObjectIds
+  
   if (!isValidObjectId(playlistId) || !isValidObjectId(videoId)) {
     throw new apiError(400, "Invalid playlist or video ID");
   }
@@ -158,7 +155,7 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
     }
   );
 
-  // If no playlist is found, return a 404 error.
+  
   if (!updatedPlaylist) {
     throw new apiError(404, "Playlist not found");
   }
@@ -177,10 +174,10 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
 });
 
 const deletePlaylist = asyncHandler(async (req, res) => {
-  // Extract playlistId from request parameters
+  
   const { playlistId } = req.params;
 
-  // Validate if playlistId is a valid MongoDB ObjectId
+  
   if (!isValidObjectId(playlistId)) {
     throw new apiError(400, "Invalid playlist ID");
   }
@@ -188,7 +185,7 @@ const deletePlaylist = asyncHandler(async (req, res) => {
   
   const deletedPlaylistDoc = await Playlist.findByIdAndDelete(playlistId);
 
-  // If no playlist is found, return a 404 error.
+  
   if (!deletedPlaylistDoc) {
     throw new apiError(404, "Playlist not found");
   }
@@ -209,12 +206,12 @@ const updatePlaylist = asyncHandler(async (req, res) => {
   const { playlistId } = req.params;
   const { name, description } = req.body;
 
-  //  Step 1: Validate the playlist ID
+
   if (!isValidObjectId(playlistId)) {
     throw new apiError(400, "Invalid playlist ID");
   }
 
-  //  Step 2: Ensure name and description are provided
+
   if (!name || !description) {
     throw new apiError(400, "Name or description cannot be empty");
   }
@@ -233,15 +230,12 @@ const updatePlaylist = asyncHandler(async (req, res) => {
     }
   );
 
-  //  If the playlist is not found, return a 404 error.
+  
   if (!updatedPlaylistDoc) {
     throw new apiError(404, "Playlist not found");
   }
 
-  /*
-     Step 4: Send a success response
-    - The updated playlist is returned in the response.
-  */
+ 
   return res
     .status(200)
     .json(

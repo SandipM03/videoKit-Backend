@@ -2,7 +2,7 @@ import mongoose, { isValidObjectId } from "mongoose"
 import {Tweet} from "../models/tweet.model.js"
 import {User} from "../models/user.model.js"
 import {apiError} from "../utils/apiError.js"
-import {ApiResponse} from "../utils/apiResponse.js"
+import {apiResponse} from "../utils/apiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
 const createTweet = asyncHandler(async (req, res) => {
@@ -23,7 +23,7 @@ const createTweet = asyncHandler(async (req, res) => {
     
         return res
             .status(201)
-            .json(new ApiResponse(201, newTweet, "Tweet created successfully"))
+            .json(new apiResponse(201, newTweet, "Tweet created successfully"))
     } catch (error) {
         throw new apiError(500, error.message || "Internal Server Error")
     }
@@ -43,7 +43,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
         }
         return res
             .status(200)
-            .json(new ApiResponse(200, tweet, "User tweets fetched successfully"))
+            .json(new apiResponse(200, tweet, "User tweets fetched successfully"))
     } catch (error) {
         throw new apiError(500, error.message || "Internal Server Error")
         
@@ -52,7 +52,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
 })
 
 const updateTweet = asyncHandler(async (req, res) => {
-    //TODO: update tweet
+  
     const {tweetId} = req.params;
     const {content} = req.body;
     
@@ -67,7 +67,7 @@ const updateTweet = asyncHandler(async (req, res) => {
             throw new apiError(400, "Content is required")
         }
 
-        // Check if tweet exists and belongs to the user
+        
         const existingTweet = await Tweet.findById(tweetId);
         if(!existingTweet){
             throw new apiError(404, "Tweet not found")
@@ -89,7 +89,7 @@ const updateTweet = asyncHandler(async (req, res) => {
             throw new apiError(404, "Tweet not found")
         }
         return res.status(200).json(
-            new ApiResponse(200, tweet, "Tweet updated successfully")
+            new apiResponse(200, tweet, "Tweet updated successfully")
         )
     } catch (error) {
         throw new apiError(500, error.message || "Internal Server Error")
@@ -97,7 +97,7 @@ const updateTweet = asyncHandler(async (req, res) => {
 })
 
 const deleteTweet = asyncHandler(async (req, res) => {
-    //TODO: delete tweet
+   
     const {tweetId} = req.params;
     try {
         if(!req.user){
@@ -118,7 +118,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
             throw new apiError(500, "Failed to delete tweet")
         }
         return res.status(200).json(
-            new ApiResponse(200, deletedTweet, "Tweet deleted successfully")
+            new apiResponse(200, deletedTweet, "Tweet deleted successfully")
         )
     } catch (error) {
         throw new apiError(500, error.message || "Internal Server Error")
