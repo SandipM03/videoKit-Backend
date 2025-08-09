@@ -15,7 +15,10 @@ router.use(veryfyJWT); // Apply veryfyJWT middleware to all routes in this file
 
 router
     .route("/")
-    .get(getAllVideos)
+3    .get(getAllVideos);
+
+router
+    .route("/publishAVideo")
     .post(
         upload.fields([
             {
